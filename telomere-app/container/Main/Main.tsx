@@ -1,7 +1,9 @@
-import { StyleSheet, Text, View, Pressable, Image } from 'react-native'
+import { StyleSheet, Text, View, Pressable, Image, Button } from 'react-native'
 import { MobileModel } from 'react-native-pytorch-core'
 import * as ImagePicker from "expo-image-picker"
 import { useState } from 'react'
+import styles from '../../assets/styles'
+import { Header } from 'react-native-elements'
 
 const Main = () => {
   const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions()
@@ -31,24 +33,22 @@ const Main = () => {
   }
 
   return (
-    <View style={styles.container}>
-      {imageUrl && <Image source={{uri: imageUrl}} style={{ width: 200, height: 200 }}/>}
-      <Pressable onPress={loadImage}>
-        <Text>
-          Upload image
-        </Text>
-      </Pressable>
-    </View>
+    <>
+      <Header
+        placement="left"
+        leftComponent={{ icon: 'menu', color: '#fff' }}
+        centerComponent={{ text: 'TELOMERE APP', style: { color: '#fff' } }}
+        rightComponent={{ icon: 'home', color: '#fff' }}
+      />
+      <View style={styles.container}>
+        {imageUrl && <Image source={{uri: imageUrl}} style={{ width: 200, height: 200 }}/>}
+        <Button
+          onPress={loadImage}
+          title="Upload image"
+        />
+      </View>
+    </>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
 
 export default Main
