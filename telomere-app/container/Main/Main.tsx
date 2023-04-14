@@ -27,9 +27,6 @@ const idx_to_result = [
   "Severe(3)"
 ]
 
-const mean = tf.tensor([[[0.485, 0.456, 0.406]]])
-const std = tf.tensor([[[0.229, 0.224, 0.225]]])
-
 
 const Main = () => {
   const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions()
@@ -69,6 +66,8 @@ const Main = () => {
     const imageTensor = decodeJpeg(raw)
 
     // resize to [1, 232, 232, 3]
+    const mean = tf.tensor([[[0.485, 0.456, 0.406]]])
+    const std = tf.tensor([[[0.229, 0.224, 0.225]]])
     const resizedTensor = tf.image.resizeBilinear(imageTensor, [232, 232])
     const normalizedTensor = resizedTensor.div(255).sub(mean).div(std)
     const expandedTensor = tf.expandDims(normalizedTensor, 0)
@@ -132,16 +131,17 @@ const Main = () => {
         rightComponent={{ icon: 'home', color: '#fff' }}
       />
       <View style={styles.container}>
-        <Text>{ready ? "Model is ready!" : "Loading model..."}</Text>
-        <Text>{"\n"}</Text>
+        <Text>{ready ? "Model is ready!\n" : "Loading model...\n"}</Text>
 
         {image && <Image source={{uri: image.uri}} style={{ width: 232, height: 232 }}/>}
-        <Text>{"\n"}</Text>
-
+        <Text></Text>
+        
         <Button
           onPress={loadImage}
           title="Upload image"
         />
+        <Text>{"\n"}</Text>
+
         {waiting
           ? <Text>Waiting for model to load...</Text> 
           : null
