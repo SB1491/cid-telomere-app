@@ -1,10 +1,12 @@
-import { StyleSheet, Text, View, Pressable, Image } from 'react-native'
+import { StyleSheet, Text, View, Image, Button } from 'react-native'
+import { Header } from 'react-native-elements'
 import { useEffect, useRef, useState } from 'react'
 import * as ImagePicker from "expo-image-picker"
 import * as ImageManipulator from 'expo-image-manipulator'
 import * as tf from '@tensorflow/tfjs';
 import { loadGraphModel } from '@tensorflow/tfjs-converter'
 import { decodeJpeg, bundleResourceIO } from '@tensorflow/tfjs-react-native'
+import styles from '../../assets/styles'
 
 const modelJson = require('../../assets/telomere_model_tfjs/model.json')
 const modelWeights1 = require('../../assets/telomere_model_tfjs/group1-shard1of4.bin')
@@ -122,41 +124,37 @@ const Main = () => {
   }
 
   return (
-    <View style={styles.container}>
-      <Text>{ready ? "Model is ready!" : "Loading model..."}</Text>
-      <Text>{"\n"}</Text>
+    <>
+      <Header
+        placement="left"
+        leftComponent={{ icon: 'menu', color: '#fff' }}
+        centerComponent={{ text: 'TELOMERE APP', style: { color: '#fff' } }}
+        rightComponent={{ icon: 'home', color: '#fff' }}
+      />
+      <View style={styles.container}>
+        <Text>{ready ? "Model is ready!" : "Loading model..."}</Text>
+        <Text>{"\n"}</Text>
 
-      {image && <Image source={{uri: image.uri}} style={{ width: 232, height: 232 }}/>}
-      <Text>{"\n"}</Text>
+        {image && <Image source={{uri: image.uri}} style={{ width: 232, height: 232 }}/>}
+        <Text>{"\n"}</Text>
 
-      <Pressable onPress={loadImage}>
-        <Text>
-          Upload image
-        </Text>
-      </Pressable>
-      <Text>{"\n"}</Text>
-      
-      {waiting
-        ? <Text>Waiting for model to load...</Text> 
-        : null
-      }
-      {running
-        ? <Text>Running...</Text>
-        : result 
-          ? <Text>Prediction result: {result}</Text> 
+        <Button
+          onPress={loadImage}
+          title="Upload image"
+        />
+        {waiting
+          ? <Text>Waiting for model to load...</Text> 
           : null
-      }
-    </View>
+        }
+        {running
+          ? <Text>Running...</Text>
+          : result 
+            ? <Text>Prediction result: {result}</Text> 
+            : null
+        }
+      </View>
+    </>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
 
 export default Main
