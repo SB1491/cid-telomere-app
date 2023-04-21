@@ -9,14 +9,13 @@ import { decodeJpeg, bundleResourceIO } from '@tensorflow/tfjs-react-native'
 import styles from '../../assets/styles'
 
 const modelJson = require('../../assets/telomere_model_tfjs/model.json')
-const modelWeights1 = require('../../assets/telomere_model_tfjs/group1-shard1of4.bin')
-const modelWeights2 = require('../../assets/telomere_model_tfjs/group1-shard2of4.bin')
-const modelWeights3 = require('../../assets/telomere_model_tfjs/group1-shard3of4.bin')
-const modelWeights4 = require('../../assets/telomere_model_tfjs/group1-shard4of4.bin')
+const modelWeights1 = require('../../assets/telomere_model_tfjs/group1-shard1of3.bin')
+const modelWeights2 = require('../../assets/telomere_model_tfjs/group1-shard2of3.bin')
+const modelWeights3 = require('../../assets/telomere_model_tfjs/group1-shard3of3.bin')
 
 const ioHandler = bundleResourceIO(
   modelJson,
-  [modelWeights1, modelWeights2, modelWeights3, modelWeights4]
+  [modelWeights1, modelWeights2, modelWeights3]
 )
 
 
