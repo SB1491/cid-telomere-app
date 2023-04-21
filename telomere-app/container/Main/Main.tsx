@@ -50,7 +50,7 @@ const Main = () => {
       setWaiting(false)
       inference(image)
     }
-  }, [ready])
+  }, [ready, waiting])
 
   const imageToTensor = async (image: ImagePicker.ImagePickerAsset) => {
     // convert image to 232*232, JPEG format
