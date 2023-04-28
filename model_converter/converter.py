@@ -10,10 +10,10 @@ import subprocess
 # PyTorch Model Definition
 #
 class MobilenetV2(nn.Module):
-    def __init__(self, num_classes=1000):
+    def __init__(self, num_classes=4):
         super(MobilenetV2, self).__init__()
-        self.model = models.mobilenet_v2(weights='IMAGENET1K_V1')
-        self.model.classifier.append(nn.Linear(1000, num_classes, bias=False))
+        self.model = models.mobilenet_v2(weights='IMAGENET1K_V2')
+        self.model.classifier[1]= nn.Linear(1280, num_classes, bias=False)
 
     def forward(self, x):
         return self.model(x)
