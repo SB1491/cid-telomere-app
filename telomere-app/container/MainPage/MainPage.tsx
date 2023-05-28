@@ -132,6 +132,11 @@ const MainPage = ({ navigation }) => {
   }
 
   const loadImage = async () => {
+    if (metadata === null) {
+      navigation.navigate('Setting')
+      return
+    }
+    
     if (!status?.granted) {
       const permission = await requestPermission()
       if (!permission.granted) {
