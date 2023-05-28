@@ -12,16 +12,40 @@ import subprocess
 class MobilenetV2(nn.Module):
     def __init__(self, num_classes=4):
         super(MobilenetV2, self).__init__()
-        self.model = models.mobilenet_v2(weights='IMAGENET1K_V2')
+        self.model = models.mobilenet_v2()
         self.model.classifier[1]= nn.Linear(1280, num_classes, bias=False)
 
     def forward(self, x):
         return self.model(x)
 
+class TeloMobilenetV2(nn.Module):
+    def __init__(self, num_classes=4):
+        super(TeloMobilenetV2, self).__init__()
+        self.MV2A = MobilenetV2(2)
+        self.MV2B = MobilenetV2(2)
+        self.MV2C = MobilenetV2(2)
+        self.telo_neural= nn.Sequential(
+            nn.Linear(10, 64),
+            nn.Tanh(),
+            nn.Linear(64, 32),
+            nn.Tanh(),
+            nn.Linear(32, 16),
+            nn.Tanh(),
+            nn.Linear(16, num_classes, bias=False)
+        )
+    
+    def forward(self, x, metadata):
+        A = self.MV2A(x)
+        B = self.MV2B(x)
+        C = self.MV2C(x)
+        y = torch.cat([A, B, C, metadata], dim=1)
+        return self.telo_neural(y)
+
+
 #
 # Load Pytorch Model
 #
-model = MobilenetV2(num_classes=4)
+model = TeloMobilenetV2()
 model.load_state_dict(torch.load('model_state.pt', map_location='cpu'))
 model.eval()
 
@@ -29,9 +53,10 @@ model.eval()
 # Pytorch Model -> ONNX Model
 #
 dummy_input = torch.randn(1, 3, 232, 232, requires_grad=True)
+dummy_metadata = torch.Tensor([[0, 0.5, 0.5, 0]])
 torch.onnx.export(
     model,
-    dummy_input,
+    (dummy_input, dummy_metadata),
     'telomere_model.onnx'
 )
 
@@ -40,10 +65,13 @@ torch.onnx.export(
 #
 tf_model_dir = "telomere_model_tf"
 onnx_model = onnx.load('telomere_model.onnx')
-input_name = onnx_model.graph.input[0].name
+input_names = [onnx_model.graph.input[i].name for i in range(2)]
+input_dim_orders = [[0, 2, 3, 1], [0, 1]]
 onnx_model = order_conversion(
     onnx_graph=onnx_model,
-    input_op_names_and_order_dims={f"{input_name}": [0,2,3,1]},
+    input_op_names_and_order_dims={
+        f"{input_names[i]}": input_dim_orders[i] for i in range(2)
+    },
     non_verbose=True
 )
 tf_rep = prepare(onnx_model)
