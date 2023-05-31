@@ -7,4 +7,16 @@ export default StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    slide: {
+        width: '80%'
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    button: {
+        flex: 1,
+        padding: '1%'
+    }
 })

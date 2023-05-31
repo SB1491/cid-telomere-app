@@ -1,17 +1,22 @@
 import { NavigationContainer } from "@react-navigation/native"
-import { createNativeStackNavigator } from "@react-navigation/native-stack"
+import { createDrawerNavigator } from "@react-navigation/drawer"
 
-import Main from "./container/Main/Main"
+import MainPage from "./container/MainPage/MainPage"
+import SettingPage from "./container/SettingPage/Settingpage"
+import { MetadataProvider } from "./context/MetadataContext"
 
-const Stack = createNativeStackNavigator()
+const Drawer = createDrawerNavigator();
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Main" component={Main} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <MetadataProvider>
+      <NavigationContainer>
+        <Drawer.Navigator initialRouteName="Main">
+          <Drawer.Screen name="Main" component={MainPage} />
+          <Drawer.Screen name="Setting" component={SettingPage} />
+        </Drawer.Navigator>
+      </NavigationContainer>
+    </MetadataProvider>
   )
 }
 
