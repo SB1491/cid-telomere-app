@@ -7,6 +7,12 @@ export default StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    scrollContainer: {
+        flexGrow: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     slide: {
         width: '80%'
     },

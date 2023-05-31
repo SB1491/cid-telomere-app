@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, Button } from 'react-native'
+import { StyleSheet, Text, View, Image, Button, ScrollView } from 'react-native'
 import { Header } from 'react-native-elements'
 import { useEffect, useRef, useState } from 'react'
 import * as ImagePicker from "expo-image-picker"
@@ -6,6 +6,7 @@ import * as ImageManipulator from 'expo-image-manipulator'
 import * as tf from '@tensorflow/tfjs';
 import { loadGraphModel } from '@tensorflow/tfjs-converter'
 import { decodeJpeg, bundleResourceIO } from '@tensorflow/tfjs-react-native'
+import { VictoryChart, VictoryArea, VictoryTheme, VictoryPolarAxis } from 'victory-native'
 import styles from '../../assets/styles'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useMetadata, useMetadataDispatch } from '../../context/MetadataContext'
@@ -175,27 +176,59 @@ const MainPage = ({ navigation }) => {
         rightComponent={{ icon: 'home', color: '#fff' }}
       />
       <View style={styles.container}>
-        <Text>{ready ? "Model is ready!\n" : "Loading model...\n"}</Text>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <Text></Text>
+          <Text>{ready ? "Model is ready!\n" : "Loading model...\n"}</Text>
 
-        {image && <Image source={{uri: image.uri}} style={{ width: 232, height: 232 }}/>}
-        <Text></Text>
-        
-        <Button
-          onPress={loadImage}
-          title="Upload image"
-        />
-        <Text>{"\n"}</Text>
+          {image && <Image source={{uri: image.uri}} style={{ width: 232, height: 232 }}/>}
+          <Text></Text>
+          
+          <Button
+            onPress={loadImage}
+            title="Upload image"
+          />
+          <Text>{"\n"}</Text>
 
-        {waiting
-          ? <Text>Waiting for model to load...</Text> 
-          : null
-        }
-        {running
-          ? <Text>Running...</Text>
-          : result 
-            ? <Text>Prediction result: {result}</Text> 
+          {waiting
+            ? <Text>Waiting for model to load...</Text> 
             : null
-        }
+          }
+          {running
+            ? <Text>Running...</Text>
+            : result 
+              ? <VictoryChart
+                  polar
+                  theme={VictoryTheme.material}
+                  style={{
+                    background: { fill: "#fff" }
+                  }}
+                >
+                  <VictoryArea 
+                    data={[
+                    {'x': '탈모성', 'y': 3},
+                    {'x': '건성', 'y': 0},
+                    {'x': '지성', 'y': 3},
+                    {'x': '민감성', 'y': 1},
+                    {'x': '염증성', 'y': 2},
+                    {'x': '비듬성', 'y': 2},
+                    ]}
+                    style={{
+                      data: {fill: "skyblue"}
+                    }}
+                  />
+                  <VictoryPolarAxis
+                    labelPlacement='vertical'
+                  />
+                  
+                  <VictoryPolarAxis dependentAxis
+                    tickValues={[0, 1, 2, 3]}
+                    axisAngle={90}
+                    labelPlacement='vertical'
+                  />
+                </VictoryChart>
+              : null
+          }
+        </ScrollView>
       </View>
     </>
   )
