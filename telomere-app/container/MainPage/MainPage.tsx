@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, Button, ScrollView } from 'react-native'
+import { Text, View, Image, Button, ScrollView } from 'react-native'
 import { Header } from 'react-native-elements'
 import { useEffect, useRef, useState } from 'react'
 import * as ImagePicker from "expo-image-picker"
@@ -101,7 +101,7 @@ const MainPage = ({ navigation }) => {
   const [ready, setReady] = useState<Boolean>(false)
   const [waiting, setWaiting] = useState<Boolean>(false)
   const [running, setRunning] = useState<Boolean>(false)
-  const [result, setResult] = useState<Number[]>([0, 0, 0, 0, 0, 0])
+  const [result, setResult] = useState<Number[] | null>(null)
   const model = useRef<tf.GraphModel>(null)
   const metadata = useMetadata()
   const dispatch = useMetadataDispatch()
@@ -251,36 +251,39 @@ const MainPage = ({ navigation }) => {
           {running
             ? <Text>Running...</Text>
             : result 
-              ? <VictoryChart
-                  polar
-                  theme={VictoryTheme.material}
-                  style={{
-                    background: { fill: "#fff" }
-                  }}
-                >
-                  <VictoryArea 
-                    data={[
-                    {'x': '탈모', 'y': result[5]},
-                    {'x': '미세각질', 'y': result[0]},
-                    {'x': '피지과다', 'y': result[1]},
-                    {'x': '모낭사이홍반', 'y': result[2]},
-                    {'x': '모낭홍반/농포', 'y': result[3]},
-                    {'x': '비듬', 'y': result[4]},
-                    ]}
-                    style={{
-                      data: {fill: "skyblue"}
-                    }}
-                  />
-                  <VictoryPolarAxis
-                    labelPlacement='vertical'
-                  />
-                  
-                  <VictoryPolarAxis dependentAxis
-                    tickValues={[0, 1, 2, 3]}
-                    axisAngle={90}
-                    labelPlacement='vertical'
-                  />
-                </VictoryChart>
+              ? <>
+                  <Text>The diagnostic results are as follows!</Text>
+                  <Text>(0: Normal ~ 3: Severe)</Text>
+                  <VictoryChart
+                      polar
+                      theme={VictoryTheme.material}
+                      style={{
+                        background: { fill: "#fff" }
+                      }}
+                    >
+                      <VictoryArea 
+                        data={[
+                        {'x': '탈모', 'y': result[5]},
+                        {'x': '미세각질', 'y': result[0]},
+                        {'x': '피지과다', 'y': result[1]},
+                        {'x': '모낭사이홍반', 'y': result[2]},
+                        {'x': '모낭홍반/농포', 'y': result[3]},
+                        {'x': '비듬', 'y': result[4]},
+                        ]}
+                        style={{
+                          data: {fill: "skyblue"}
+                        }}
+                      />
+                      <VictoryPolarAxis
+                        labelPlacement='vertical'
+                      />
+                      <VictoryPolarAxis dependentAxis
+                        tickValues={[0, 1, 2, 3]}
+                        axisAngle={90}
+                        labelPlacement='vertical'
+                      />
+                    </VictoryChart>
+                    </>
               : null
           }
         </ScrollView>
