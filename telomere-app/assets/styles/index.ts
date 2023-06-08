@@ -24,5 +24,8 @@ export default StyleSheet.create({
     button: {
         flex: 1,
         padding: '1%'
+    },
+    verticalButton: {
+        margin: '1%'
     }
 })

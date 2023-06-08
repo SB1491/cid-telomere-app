@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, Button } from 'react-native'
+import { Text, View, Button } from 'react-native'
 import { useState } from 'react'
 import { Slider } from '@miblanchard/react-native-slider'
 import { useMetadataDispatch } from '../../context/MetadataContext'
@@ -92,27 +92,28 @@ const SettingPage = ({ navigation }) => {
           case 2: {
             return (
               <>
-                <Text>How many times do you use shampoo every two days?{"\n"}</Text>
-                <View style={styles.buttonContainer}>
-                  <View style={styles.button}>
+                <Text>How often do you use shampoo?{"\n"}</Text>
+                <View>
+                  <View style={styles.verticalButton}>
                     <Button
                       onPress={() => {setShampoo(1); setStage(3)}}
-                      title="Once"
+                      title="every other day"
                     />
                   </View>
-                  <View style={styles.button}>
+                  <View style={styles.verticalButton}>
                     <Button
                       onPress={() => {setShampoo(2); setStage(3)}}
-                      title="Twice"
+                      title="once a day"
                     />
                   </View>
-                  <View style={styles.button}>
+                  <View style={styles.verticalButton}>
                     <Button
                       onPress={() => {setShampoo(4); setStage(3)}}
-                      title="Four times"
+                      title="twice a day"
                     />
                   </View>
                 </View>
+
               </>
             )
           }

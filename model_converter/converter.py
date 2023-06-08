@@ -24,29 +24,57 @@ class TeloMobilenetV2(nn.Module):
         self.MV2A = MobilenetV2(2)
         self.MV2B = MobilenetV2(2)
         self.MV2C = MobilenetV2(2)
-        self.telo_neural= nn.Sequential(
-            nn.Linear(10, 64),
+        self.telo_append = nn.Sequential(
+            nn.Linear(6, 28),
+            nn.Tanh()
+        )
+        self.telo_neural = nn.Sequential(
+            nn.Linear(32, 64),
             nn.Tanh(),
             nn.Linear(64, 32),
             nn.Tanh(),
-            nn.Linear(32, 16),
-            nn.Tanh(),
-            nn.Linear(16, num_classes, bias=False)
+            nn.Linear(32, num_classes, bias=False)
         )
     
     def forward(self, x, metadata):
         A = self.MV2A(x)
         B = self.MV2B(x)
         C = self.MV2C(x)
-        y = torch.cat([A, B, C, metadata], dim=1)
+        y = torch.cat([A, B, C], dim=1)
+        y = self.telo_append(y)
+        y = torch.cat([y, metadata], dim=1)
         return self.telo_neural(y)
+
+class SuperTeloMobilenetV2(nn.Module):
+    def __init__(self, num_classes=4):
+        super(SuperTeloMobilenetV2, self).__init__()
+        self.TMV1 = TeloMobilenetV2(num_classes=num_classes)
+        self.TMV2 = TeloMobilenetV2(num_classes=num_classes)
+        self.TMV3 = TeloMobilenetV2(num_classes=num_classes)
+        self.TMV4 = TeloMobilenetV2(num_classes=num_classes)
+        self.TMV5 = TeloMobilenetV2(num_classes=num_classes)
+        self.TMV6 = TeloMobilenetV2(num_classes=num_classes)
+
+    def forward(self, x, metadata):
+        out1 = self.TMV1(x, metadata)
+        out2 = self.TMV2(x, metadata)
+        out3 = self.TMV3(x, metadata)
+        out4 = self.TMV4(x, metadata)
+        out5 = self.TMV5(x, metadata)
+        out6 = self.TMV6(x, metadata)
+        return torch.cat([out1, out2, out3, out4, out5, out6], dim=1)
 
 
 #
 # Load Pytorch Model
 #
-model = TeloMobilenetV2()
-model.load_state_dict(torch.load('model_state.pt', map_location='cpu'))
+model = SuperTeloMobilenetV2()
+model.TMV1.load_state_dict(torch.load('model1_weight.pt', map_location='cpu'))
+model.TMV2.load_state_dict(torch.load('model2_weight.pt', map_location='cpu'))
+model.TMV3.load_state_dict(torch.load('model3_weight.pt', map_location='cpu'))
+model.TMV4.load_state_dict(torch.load('model4_weight.pt', map_location='cpu'))
+model.TMV5.load_state_dict(torch.load('model5_weight.pt', map_location='cpu'))
+model.TMV6.load_state_dict(torch.load('model6_weight.pt', map_location='cpu'))
 model.eval()
 
 #
